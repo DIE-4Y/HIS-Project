@@ -53,6 +53,7 @@ public class CheckController {
 
     /**
      * 根据病历号和姓名模糊查找
+     * 还需要查找未缴费药品 -- 暂时还未做
      */
     @GetMapping("/findByCaseNumberAndName")
     public Result findByCaseNumberAndName(String caseNumber, String name, Integer pageSize, Integer pageNumber, String state) {
