@@ -119,7 +119,7 @@ public class CheckController {
     public Result getAllCheckedMedicalTechnology(String caseNumber, String name) {
         log.info("根据病历号，姓名，check_state状态获取所有项目,caseNumber:{}, name:{}", caseNumber, name);
         List<Map<String, Object>> medicalTechnologyList = checkRequestService.getAllMedicalTechnology(caseNumber, name, "执行完成");
-        if (medicalTechnologyList.size() == 0) {
+        if (medicalTechnologyList.isEmpty()) {
             return Result.error("没有已检查项目");
         } else {
             return Result.success(medicalTechnologyList);
