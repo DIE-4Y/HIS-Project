@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="edu.nenu.hisserver.mapper.MedicalRecordMapper">
+    <!--添加病历表和疾病id-->
+    <insert id="insertByMedicalIdAndDiseaseId">
+        insert into medical_record_disease(medical_record_id, disease_id)
+        values
+        <foreach collection="diseaseIdList" item="diseaseId" separator=",">
+            (#{medicalRecordId}, #{diseaseId})
+        </foreach>
+    </insert>
+    <!--根据registerId更新MedicalRecord-->
+    <update id="updateMedicalRecord">
+        update medical_record
+        <set>
+            <if test="readme != null and readme !='' ">readme=#{readme},</if>
+            <if test="present != null and present !='' ">present = #{present},</if>
+            <if test="presentTreat != null and presentTreat !='' ">present_treat = #{presentTreat},</if>
+            <if test="history != null and history !='' ">history = #{history},</if>
+            <if test="allergy != null and allergy !='' ">allergy = #{allergy},</if>
+            <if test="physique != null and physique !='' ">physique = #{physique},</if>
+            <if test="proposal != null and proposal !='' ">proposal = #{proposal},</if>
+            <if test="careful != null and careful !='' ">careful = #{careful},</if>
+            <if test="diagnosis != null and diagnosis !='' ">diagnosis = #{diagnosis},</if>
+            <if test="cure != null and cure !='' ">cure = #{cure},</if>
+        </set>
+        where register_id = #{registerId}
+    </update>
+</mapper>

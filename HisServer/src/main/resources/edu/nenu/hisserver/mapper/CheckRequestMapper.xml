@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.nenu.hisserver.mapper.CheckRequestMapper">
+    <!--修改缴费状态-->
+    <update id="updateSettlementState">
+        update check_request
+        set
+        <foreach collection="checkRequestIdList" separator="," item="checkRequestId">
+            check_state=#{checkState}
+            where id=#{checkRequestId}
+        </foreach>
+    </update>
+    <!--更新check_state和其他部分信息状态-->
+    <update id="updateCheckState">
+        update check_request
+        set check_employee_id=#{empId},
+        check_time=#{checkTime},
+        check_state="执行完成"
+        where register_id=#{registerId} and medical_technology_id in
+        <foreach collection="medicalTechnologyIdList" item="medicalTechnologyId" separator="," open="(" close=")">
+            #{medicalTechnologyId}
+        </foreach>
+    </update>
+    <!--修改检查结果-->
+    <update id="updateInputCheck">
+        update check_request cr
+        set cr.inputcheck_employee_id=#{empId},
+        check_result=#{checkResult},
+        check_state="已出结果"
+        where cr.register_id = #{registerId}
+        and medical_technology_id in
+        <foreach item="id" collection="medicalTechnologyIdList" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+    <!--根据check_state状态获取所有未缴费项目-->
+    <select id="getAllMedicalTechnology" resultType="hashmap">
+        select mt.id, mt.tech_code techCode, mt.tech_name techName, mt.tech_format techFormat, mt.tech_price techPrice,
+        mt.tech_type techType, mt.price_type priceType,
+        mt.deptment_id deptmentId, cr.creation_time creationTime, COUNT(*) AS number,
+        r.real_name realName, r.card_number cardNumber, r.age, r.gender, cr.id checkRequestId
+        from medical_technology mt
+        join check_request cr on mt.id = cr.medical_technology_id
+        join register r on cr.register_id = r.id
+        <where>
+            check_state = #{state}
+            <if test="caseNumber != null and caseNumber != ''">and r.case_number = #{caseNumber}</if>
+            <if test="name != null and name != ''">and r.real_name like concat('%', #{name}, '%')</if>
+        </where>
+        GROUP BY
+        r.real_name, mt.tech_code, mt.tech_name, mt.tech_format, mt.tech_price, mt.tech_type, mt.price_type,
+        mt.deptment_id, cr.creation_time, mt.id, r.card_number, r.age, r.gender, cr.id
+    </select>
+    <!--根据病历号和姓名模糊查找人员-->
+    <select id="findByCaseNumberAndName" resultType="edu.nenu.hisserver.pojo.Register">
+        select r.id,
+        r.case_number,
+        r.real_name,
+        r.gender,
+        r.card_number,
+        r.birthday,
+        r.age,
+        r.age_type,
+        r.home_address,
+        r.visit_date,
+        r.noon,
+        r.deptment_id,
+        r.employee_id,
+        r.regist_level_id,
+        r.settle_category_id,
+        r.is_book,
+        r.regist_method,
+        r.visit_state,
+        r.regist_money
+        fROM register r
+        join check_request cr on r.id = cr.register_id
+        <where>
+            cr.check_state=#{state}
+            <if test="caseNumber != null and caseNumber != ''">and case_number = #{caseNumber}</if>
+            <if test="name != null and name != ''">and real_name like concat('%',#{name} ,'%')</if>
+        </where>
+
+    </select>
+
+</mapper>

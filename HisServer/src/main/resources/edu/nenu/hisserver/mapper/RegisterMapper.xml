@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.nenu.hisserver.mapper.RegisterMapper">
+    <!--根据empId caseNumber realName 查询所的病人 实现动态查询-->
+    <select id="findAllRegistersByEmployee" resultType="edu.nenu.hisserver.pojo.Register">
+        select *
+        from register r
+        <where>
+            employee_id = #{empId}
+            and visit_state=#{state}
+            <if test="caseNumber!=null and caseNumber!=''">and case_number = #{caseNumber}</if>
+            <if test="realName!=null and realName!=''">and real_name like concat('%', #{realName},'%')</if>
+        </where>
+    </select>
+</mapper>

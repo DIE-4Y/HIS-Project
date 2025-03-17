@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.nenu.hisserver.mapper.DrugstoreMapper">
+    <!--根据state获取所有已缴费人员-->
+    <select id="getAllRegisterByState" resultType="edu.nenu.hisserver.pojo.Register">
+        select r.id,
+        r.case_number,
+        r.real_name,
+        r.gender,
+        r.age,
+        r.age_type
+        from register r
+        join prescription p on r.id = p.register_id
+        <where>
+            p.drug_state=#{state}
+            <if test="caseNumber != null and caseNumber != ''">and r.case_number=#{caseNumber}</if>
+            <if test="realName != null and realName != ''">and r.real_name like concat('%', #{realName}, '%')</if>
+        </where>
+        group by r.id, r.case_number, r.real_name, r.gender, r.age, r.age_type
+    </select>
+</mapper>

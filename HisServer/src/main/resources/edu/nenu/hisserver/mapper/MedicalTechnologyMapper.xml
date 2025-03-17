@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.nenu.hisserver.mapper.MedicalTechnologyMapper">
+    <!--根据id和名称模糊查询体检项目-->
+    <select id="getAllMedicalTechnology" resultType="edu.nenu.hisserver.pojo.MedicalTechnology">
+        select *
+        from medical_technology
+        <where>
+            <if test="id != null">
+                id = #{id}
+            </if>
+            <if test="name != null and name != ''">
+                and tech_name like concat('%', #{name}, '%')
+            </if>
+        </where>
+    </select>
+</mapper>

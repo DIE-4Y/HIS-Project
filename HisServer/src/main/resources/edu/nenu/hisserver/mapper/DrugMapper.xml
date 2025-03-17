@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.nenu.hisserver.mapper.DrugMapper">
+    <!--根据名称和记助码获取所有药品信息-->
+    <select id="findByNameAndCode" resultType="edu.nenu.hisserver.pojo.DrugInfo">
+        select * from drug_info
+        <where>
+            <if test="drugName != null and drugName != ''">drug_name like concat('%',#{drugName},'%')</if>
+            <if test="drugCode != null and drugCode != ''">and drug_code=#{drugCode}</if>
+        </where>
+    </select>
+</mapper>
